@@ -1,0 +1,20 @@
+FROM ubuntu:24.04
+ARG ZIG_ARCH=aarch64
+ARG ZIG_VERSION=0.16.0
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libssl-dev \
+        curl \
+        xz-utils \
+        ca-certificates \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL \
+        "https://github.com/ziglang/zig/releases/download/${ZIG_VERSION}/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}.tar.xz" \
+        -o /tmp/zig.tar.xz \
+    && tar -xJf /tmp/zig.tar.xz -C /usr/local \
+    && ln -s "/usr/local/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}/zig" /usr/local/bin/zig \
+    && rm /tmp/zig.tar.xz
+
+WORKDIR /src
